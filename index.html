@@ -1,0 +1,76 @@
+---
+title: Homepage
+layout: base
+description: The knowledgebase of Theobald Software
+permalink: /
+search-ignore: true
+common-css:
+- "/css/instantsearch.min.css"
+- "/css/instantsearch-theme-algolia.min.css"
+---
+
+<header class="header-section header-section-search header-section-search-homepage">
+    <div class="intro-header intro-header-search">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+                <div class="search-heading">
+                    <h1>{{ site.content.homepage-search-title | markdownify }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+            <div id="search-box">
+                <form class="homepage-search-form" action="search.html">
+                    <div class="ais-search-box">
+                        <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="Search..." role="textbox" spellcheck="false" type="text" value="" name="fromHomepage" class="ais-search-box--input">
+                        <span class="ais-search-box--magnifier-wrapper">
+                            <div class="ais-search-box--magnifier">
+                              <svg xmlns="http://www.w3.org/2000/svg" id="sbx-icon-search-13" viewBox="0 0 40 40" width="100%" height="100%">
+                                <path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z" fill-rule="evenodd">
+                                </path>
+                              </svg>
+                            </div>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="row row-centered aligned-row" role="main">
+
+
+        {% for collection in site.collections %}
+            {% unless collection.label == "posts" %}
+                <div class="col-md-6 col-sm-6">
+                    <div class="double-listing {% cycle 'double-listing-uneven', 'double-listing-even' %}">
+                        {% assign collection_doc = collection.docs | where_exp:"doc", "doc.relative_path contains '/index'" %}
+                        {% if collection_doc != '' %}
+                            {% capture read_more_link %}{{ site.url }}{{ collection_doc[0].url }}{% endcapture %}
+                            <a href="{{ read_more_link }}"><h2>{{ collection.name }}</h2></a>
+                        {% endif %}
+                        <hr class="length">
+                        {% assign filtered_docs = collection.docs | sort: 'weight' %}
+                        {% for doc in filtered_docs limit:6 %}
+                            {% unless doc.relative_path contains '/index' %}
+                                <div class="double-listing-item">
+                                    <a class="double-listing-link" href="{{doc.url}}">{{doc.title}}</a>
+                                </div>
+                            {% endunless %}
+                        {% endfor %}
+                        <br>
+                        {% if collection_doc != '' %}
+                            <a class="double-listing-link-read-more" href="{{ read_more_link }}">Read more about {{ collection.name }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endunless %}
+        {% endfor %}
+</div>
